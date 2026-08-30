@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Karyawan</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="header-red-gold">
+            <div class="header-left">
+                <h1>👤 DASHBOARD PRIBADI</h1>
+            </div>
+            <div class="header-right">
+                <span id="karyawanName" class="user-name">👤 Karyawan</span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </header>
+        
+        <!-- NAVIGASI -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="nav-tab" data-tab="payroll">💰 Payroll Saya</button>
+            <button class="nav-tab" data-tab="izin">📅 Izin</button>
+        </nav>
+        
+        <!-- KONTEN -->
+        <div class="content-area">
+            <!-- TAB DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card red">
+                        <h3>Total Unit</h3>
+                        <p id="kTotalUnit">0</p>
+                    </div>
+                    <div class="stat-card gold">
+                        <h3>Total Tips</h3>
+                        <p id="kTotalTips">Rp 0</p>
+                    </div>
+                    <div class="stat-card red">
+                        <h3>Total Bonus</h3>
+                        <p id="kTotalBonus">Rp 0</p>
+                    </div>
+                    <div class="stat-card gold">
+                        <h3>Total Kasbon</h3>
+                        <p id="kTotalKasbon">Rp 0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB PAYROLL -->
+            <div id="tab-payroll" class="tab-content">
+                <div class="card">
+                    <h3>💰 Payroll Saya</h3>
+                    <div id="kPayrollList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB IZIN -->
+            <div id="tab-izin" class="tab-content">
+                <div class="card">
+                    <h3>📅 Pengajuan Izin Istirahat</h3>
+                    <form id="izinForm">
+                        <div class="form-group">
+                            <label>Tanggal Izin</label>
+                            <input type="date" id="izinTanggal" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Keterangan (Opsional)</label>
+                            <input type="text" id="izinKeterangan" placeholder="Alasan izin...">
+                        </div>
+                        <button type="submit" class="btn-primary">📨 Ajukan Izin</button>
+                    </form>
+                    <div id="izinResult" class="message-box"></div>
+                </div>
+                <div class="card">
+                    <h3>📋 Riwayat Izin</h3>
+                    <div id="kIzinList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Script.js"></script>
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydsYO1skuQO4MtFhNF1WYhfQ3Q3oHHxo5JtpPiORkC30WckJDtSoHp7X78JIW2LP3w/exec';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = 'Login.html'; return; }
+            
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('karyawanName').textContent = '👤 ' + (user.nama || 'Karyawan');
+            
+            // Set default tanggal
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('izinTanggal').value = today;
+            
+            // Load data
+            loadKaryawanDashboard();
+            loadKaryawanPayroll();
+            loadKaryawanIzin();
+            
+            // Event listeners
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                });
+            });
+            
+            document.getElementById('izinForm').addEventListener('submit', submitIzin);
+        });
+        
+        async function loadKaryawanDashboard() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'getDashboardData', token: token })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('kTotalUnit').textContent = result.total_unit || 0;
+                    document.getElementById('kTotalTips').textContent = 'Rp ' + formatNumber(result.total_tips || 0);
+                    document.getElementById('kTotalBonus').textContent = 'Rp ' + formatNumber(result.total_bonus || 0);
+                    document.getElementById('kTotalKasbon').textContent = 'Rp ' + formatNumber(result.total_kasbon || 0);
+                }
+            } catch (error) { console.error(error); }
+        }
+        
+        async function loadKaryawanPayroll() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'getPayroll', token: token })
+                });
+                const result = await response.json();
+                
+                const list = document.getElementById('kPayrollList');
+                if (result.success && result.payroll && result.payroll.length > 0) {
+                    let html = `<table>
+                        <tr><th>Periode</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>WIFI</th><th>Total</th><th>Status</th></tr>`;
+                    result.payroll.forEach(p => {
+                        html += `<tr>
+                            <td>${p.periode}</td>
+                            <td>${p.total_unit}</td>
+                            <td>Rp ${formatNumber(p.total_tips)}</td>
+                            <td>Rp ${formatNumber(p.total_bonus)}</td>
+                            <td>Rp ${formatNumber(p.total_kasbon)}</td>
+                            <td>Rp ${formatNumber(p.total_wifi)}</td>
+                            <td><strong>Rp ${formatNumber(p.total_payroll)}</strong></td>
+                            <td><span class="badge ${p.status}">${p.status}</span></td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    list.innerHTML = html;
+                } else {
+                    list.innerHTML = '<p>Belum ada data payroll</p>';
+                }
+            } catch (error) { console.error(error); }
+        }
+        
+        async function loadKaryawanIzin() {
+            document.getElementById('kIzinList').innerHTML = '<p>Memuat data izin...</p>';
+        }
+        
+        async function submitIzin(e) {
+            e.preventDefault();
+            alert('Fitur izin sedang dalam pengembangan');
+        }
+        
+        function formatNumber(num) {
+            if (!num) return '0';
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'Login.html';
+        }
+    </script>
+</body>
+</html>
