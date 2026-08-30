@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard KT</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="header-red-gold">
+            <div class="header-left">
+                <h1>🏪 DASHBOARD CABANG</h1>
+            </div>
+            <div class="header-right">
+                <span id="ktName" class="user-name">👤 KT</span>
+                <span id="ktCabang" class="badge badge-cabang">CBG</span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </header>
+        
+        <!-- NAVIGASI -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="nav-tab" data-tab="input">📝 Input</button>
+            <button class="nav-tab" data-tab="payroll">💰 Payroll</button>
+            <button class="nav-tab" data-tab="izin">📅 Izin</button>
+            <button class="nav-tab" data-tab="laporan">📋 Laporan</button>
+        </nav>
+        
+        <!-- KONTEN -->
+        <div class="content-area">
+            <!-- TAB DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card red">
+                        <h3>Total Unit</h3>
+                        <p id="ktTotalUnit">0</p>
+                    </div>
+                    <div class="stat-card gold">
+                        <h3>Target Hari Ini</h3>
+                        <p id="ktTarget">0</p>
+                    </div>
+                    <div class="stat-card red">
+                        <h3>Status</h3>
+                        <p id="ktStatus">Belum Tembus</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>📋 Payroll Cabang</h3>
+                    <div id="ktPayrollList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB INPUT -->
+            <div id="tab-input" class="tab-content">
+                <div class="card">
+                    <h3>📝 Input Pendapatan Harian</h3>
+                    <form id="inputPendapatanForm">
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" id="inputTanggal">
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Karyawan</label>
+                            <select id="inputKaryawan">
+                                <option value="">Pilih Karyawan</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Unit</label>
+                                <input type="number" id="inputUnit" placeholder="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tips</label>
+                                <input type="number" id="inputTips" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Bonus</label>
+                                <input type="number" id="inputBonus" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Kasbon</label>
+                                <input type="number" id="inputKasbon" placeholder="0">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">💾 Simpan</button>
+                    </form>
+                    <div id="inputResult" class="message-box"></div>
+                </div>
+            </div>
+            
+            <!-- TAB PAYROLL -->
+            <div id="tab-payroll" class="tab-content">
+                <div class="card">
+                    <h3>💰 Data Payroll Cabang</h3>
+                    <div id="ktPayrollData" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB IZIN -->
+            <div id="tab-izin" class="tab-content">
+                <div class="card">
+                    <h3>📅 Pengajuan Izin Istirahat</h3>
+                    <form id="izinForm">
+                        <div class="form-group">
+                            <label>Tanggal Izin</label>
+                            <input type="date" id="izinTanggal" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Keterangan (Opsional)</label>
+                            <input type="text" id="izinKeterangan" placeholder="Alasan izin...">
+                        </div>
+                        <button type="submit" class="btn-primary">📨 Ajukan Izin</button>
+                    </form>
+                    <div id="izinResult" class="message-box"></div>
+                </div>
+                <div class="card">
+                    <h3>📋 Riwayat Izin</h3>
+                    <div id="ktIzinList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB LAPORAN -->
+            <div id="tab-laporan" class="tab-content">
+                <div class="card">
+                    <h3>📋 Buat Laporan Cabang</h3>
+                    <form id="laporanForm">
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <select id="laporanKategori">
+                                <option value="Stok Habis">Stok Habis</option>
+                                <option value="Kerusakan Mesin">Kerusakan Mesin</option>
+                                <option value="Air">Air</option>
+                                <option value="Listrik">Listrik</option>
+                                <option value="Pergantian Barang">Pergantian Barang</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Keterangan</label>
+                            <textarea id="laporanKeterangan" rows="3" placeholder="Jelaskan laporan Anda..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">📨 Kirim Laporan</button>
+                    </form>
+                    <div id="laporanResult" class="message-box"></div>
+                </div>
+                <div class="card">
+                    <h3>📋 Riwayat Laporan</h3>
+                    <div id="ktLaporanList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Script.js"></script>
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydsYO1skuQO4MtFhNF1WYhfQ3Q3oHHxo5JtpPiORkC30WckJDtSoHp7X78JIW2LP3w/exec';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = 'Login.html'; return; }
+            
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('ktName').textContent = '👤 ' + (user.nama || 'KT');
+            document.getElementById('ktCabang').textContent = user.kode_cabang || 'CBG';
+            
+            // Set default tanggal
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputTanggal').value = today;
+            document.getElementById('izinTanggal').value = today;
+            
+            // Load data
+            loadKTDashboard();
+            loadKTKaryawan();
+            loadKTPayroll();
+            loadKTIzin();
+            loadKTLaporan();
+            
+            // Event listeners
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+                });
+            });
+            
+            document.getElementById('inputPendapatanForm').addEventListener('submit', submitPendapatan);
+            document.getElementById('izinForm').addEventListener('submit', submitIzin);
+            document.getElementById('laporanForm').addEventListener('submit', submitLaporan);
+        });
+        
+        // ============================================
+        // FUNGSI KT DASHBOARD
+        // ============================================
+        async function loadKTDashboard() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'getDashboardData', token: token })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('ktTotalUnit').textContent = result.total_unit || 0;
+                    // Target dari cabang
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    const target = getTargetCabang(user.kode_cabang);
+                    document.getElementById('ktTarget').textContent = target || 0;
+                    
+                    const status = (result.total_unit || 0) >= (target || 0) ? '✅ Tembus!' : '❌ Belum Tembus';
+                    document.getElementById('ktStatus').textContent = status;
+                    document.getElementById('ktStatus').style.color = (result.total_unit || 0) >= (target || 0) ? '#2E7D32' : '#D32F2F';
+                }
+            } catch (error) { console.error(error); }
+        }
+        
+        async function loadKTKaryawan() {
+            try {
+                const token = localStorage.getItem('token');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'getKaryawanByCabang', 
+                        token: token,
+                        kode_cabang: user.kode_cabang 
+                    })
+                });
+                const result = await response.json();
+                
+                const select = document.getElementById('inputKaryawan');
+                select.innerHTML = '<option value="">Pilih Karyawan</option>';
+                if (result.success && result.karyawan) {
+                    result.karyawan.forEach(k => {
+                        select.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
+                    });
+                }
+            } catch (error) { console.error(error); }
+        }
+        
+        async function loadKTPayroll() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'getPayroll', token: token })
+                });
+                const result = await response.json();
+                
+                const list = document.getElementById('ktPayrollData');
+                if (result.success && result.payroll && result.payroll.length > 0) {
+                    let html = `<table>
+                        <tr><th>Periode</th><th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>Total</th><th>Status</th></tr>`;
+                    result.payroll.forEach(p => {
+                        html += `<tr>
+                            <td>${p.periode}</td>
+                            <td>${p.nama}</td>
+                            <td>${p.total_unit}</td>
+                            <td>Rp ${formatNumber(p.total_tips)}</td>
+                            <td>Rp ${formatNumber(p.total_bonus)}</td>
+                            <td>Rp ${formatNumber(p.total_kasbon)}</td>
+                            <td><strong>Rp ${formatNumber(p.total_payroll)}</strong></td>
+                            <td><span class="badge ${p.status}">${p.status}</span></td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    list.innerHTML = html;
+                } else {
+                    list.innerHTML = '<p>Belum ada data payroll</p>';
+                }
+            } catch (error) { console.error(error); }
+        }
+        
+        // ============================================
+        // FUNGSI INPUT PENDAPATAN
+        // ============================================
+        async function submitPendapatan(e) {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('inputResult');
+            const btn = this.querySelector('button');
+            
+            const data = {
+                action: 'inputPendapatan',
+                token: localStorage.getItem('token'),
+                tanggal: document.getElementById('inputTanggal').value,
+                id_karyawan: document.getElementById('inputKaryawan').value,
+                nama_karyawan: document.getElementById('inputKaryawan').selectedOptions[0]?.text || '',
+                unit: parseInt(document.getElementById('inputUnit').value) || 0,
+                tips: parseInt(document.getElementById('inputTips').value) || 0,
+                bonus: parseInt(document.getElementById('inputBonus').value) || 0,
+                kasbon: parseInt(document.getElementById('inputKasbon').value) || 0
+            };
+            
+            if (!data.tanggal) { alert('Tanggal wajib diisi'); return; }
+            if (!data.id_karyawan) { alert('Pilih karyawan'); return; }
+            if (data.unit <= 0) { alert('Unit wajib diisi dan harus lebih dari 0'); return; }
+            
+            // Check iklan untuk KT
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (shouldShowAds(user.jabatan)) {
+                resultDiv.className = 'message-box';
+                resultDiv.textContent = '⏳ Menampilkan iklan...';
+                btn.disabled = true;
+                
+                showInterstitialAd(async function() {
+                    btn.disabled = false;
+                    await submitPendapatanData(data, resultDiv, btn);
+                });
+                return;
+            }
+            
+            await submitPendapatanData(data, resultDiv, btn);
+        }
+        
+        async function submitPendapatanData(data, resultDiv, btn) {
+            resultDiv.className = 'message-box';
+            resultDiv.textContent = 'Memproses...';
+            btn.textContent = 'Loading...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.className = 'message-box success';
+                    resultDiv.textContent = result.message || 'Data berhasil disimpan!';
+                    document.getElementById('inputPendapatanForm').reset();
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('inputTanggal').value = today;
+                    loadKTDashboard();
+                    loadKTKaryawan();
+                } else {
+                    resultDiv.className = 'message-box error';
+                    resultDiv.textContent = result.message || 'Gagal simpan data';
+                }
+            } catch (error) {
+                resultDiv.className = 'message-box error';
+                resultDiv.textContent = 'Gagal terhubung ke server';
+            } finally {
+                btn.textContent = '💾 Simpan';
+                btn.disabled = false;
+            }
+        }
+        
+        // ============================================
+        // FUNGSI IZIN & LAPORAN
+        // ============================================
+        async function loadKTIzin() {
+            // Implementasi load izin
+            document.getElementById('ktIzinList').innerHTML = '<p>Memuat data izin...</p>';
+        }
+        
+        async function loadKTLaporan() {
+            // Implementasi load laporan
+            document.getElementById('ktLaporanList').innerHTML = '<p>Memuat data laporan...</p>';
+        }
+        
+        async function submitIzin(e) {
+            e.preventDefault();
+            // Implementasi submit izin
+            alert('Fitur izin sedang dalam pengembangan');
+        }
+        
+        async function submitLaporan(e) {
+            e.preventDefault();
+            // Implementasi submit laporan
+            alert('Fitur laporan sedang dalam pengembangan');
+        }
+        
+        // ============================================
+        // UTILITY
+        // ============================================
+        function getTargetCabang(kode_cabang) {
+            const targets = {
+                'GROBOGAN': 100,
+                'PALIS': 50,
+                'CAYUR': 50,
+                'KRESEK': 50
+            };
+            return targets[kode_cabang] || 0;
+        }
+        
+        function formatNumber(num) {
+            if (!num) return '0';
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'Login.html';
+        }
+    </script>
+</body>
+</html>
