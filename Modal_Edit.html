@@ -1,0 +1,43 @@
+<!-- MODAL EDIT PAYROLL -->
+<div id="editPayrollModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('editPayrollModal')">&times;</span>
+        <h3>✏️ Edit Payroll</h3>
+        <form id="editPayrollForm">
+            <div class="form-group">
+                <label>Nama Karyawan</label>
+                <input type="text" id="editNama" disabled>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Unit</label>
+                    <input type="number" id="editUnit" required>
+                </div>
+                <div class="form-group">
+                    <label>Tips</label>
+                    <input type="number" id="editTips">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Bonus</label>
+                    <input type="number" id="editBonus">
+                </div>
+                <div class="form-group">
+                    <label>Kasbon</label>
+                    <input type="number" id="editKasbon">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select id="editStatus">
+                    <option value="draft">Draft</option>
+                    <option value="final">Final</option>
+                    <option value="edited">Edited</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">💾 Simpan</button>
+        </form>
+        <div id="editResult" class="message-box"></div>
+    </div>
+</div>
