@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Payroll System</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo-container">
+                <h1>🔐</h1>
+                <h2>PAYROLL SYSTEM</h2>
+                <p>PT. KARYA SEJAHTERA</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>ID</label>
+                    <input type="text" id="id" placeholder="Masukkan ID Anda" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Masukkan Password" required>
+                </div>
+                <button type="submit" class="btn-primary">LOGIN</button>
+            </form>
+            
+            <div id="message" class="message-box"></div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 PT. KARYA SEJAHTERA</p>
+        </div>
+    </div>
+
+    <script src="Script.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('id').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const messageDiv = document.getElementById('message');
+            
+            // Reset pesan
+            messageDiv.className = 'message-box';
+            messageDiv.textContent = '';
+            
+            if (!id || !password) {
+                messageDiv.className = 'message-box error';
+                messageDiv.textContent = 'ID dan Password wajib diisi!';
+                return;
+            }
+            
+            // Tampilkan loading
+            const btn = this.querySelector('button');
+            btn.textContent = 'Loading...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'login', 
+                        id: id, 
+                        password: password 
+                    })
+                });
+                
+                const result = await response.json();
+                console.log('Login result:', result);
+                
+                if (result.success) {
+                    // Simpan token dan data user
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    // Cek apakah perlu iklan (KT & Karyawan)
+                    if (shouldShowAds(result.user.jabatan)) {
+                        // Tampilkan iklan interstitial
+                        showInterstitialAd(function() {
+                            redirectToDashboard(result.user);
+                        });
+                    } else {
+                        redirectToDashboard(result.user);
+                    }
+                } else {
+                    messageDiv.className = 'message-box error';
+                    messageDiv.textContent = result.message || 'Login gagal';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                messageDiv.className = 'message-box error';
+                messageDiv.textContent = 'Gagal terhubung ke server. Periksa koneksi internet.';
+            } finally {
+                btn.textContent = 'LOGIN';
+                btn.disabled = false;
+            }
+        });
+        
+        function redirectToDashboard(user) {
+            if (user.jabatan === 'Owner' || user.jabatan === 'Admin') {
+                window.location.href = 'Dashboard_Owner.html';
+            } else if (user.jabatan === 'Kepala Toko') {
+                window.location.href = 'Dashboard_KT.html';
+            } else {
+                window.location.href = 'Dashboard_Karyawan.html';
+            }
+        }
+    </script>
+</body>
+</html>
