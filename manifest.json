@@ -1,7 +1,7 @@
 {
-  "name": "Payroll System - PT Karya Sejahtera",
+  "name": "Payroll System - Steam MP 7000",
   "short_name": "Payroll",
-  "description": "Sistem Manajemen Payroll & HRD",
+  "description": "Sistem Manajemen Payroll & HRD Steam MP 7000",
   "start_url": "Login.html",
   "display": "standalone",
   "background_color": "#D32F2F",
