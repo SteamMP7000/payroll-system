@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Owner</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="header-red-gold">
+            <div class="header-left">
+                <h1>🏢 DASHBOARD MANAJEMEN</h1>
+            </div>
+            <div class="header-right">
+                <span id="userName" class="user-name">👤 Admin</span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
+            </div>
+        </header>
+        
+        <!-- NAVIGASI -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="nav-tab" data-tab="hrd">👥 HRD</button>
+            <button class="nav-tab" data-tab="payroll">💰 Payroll</button>
+            <button class="nav-tab" data-tab="pengeluaran">💸 Pengeluaran</button>
+            <button class="nav-tab" data-tab="approve">✅ Approve</button>
+            <button class="nav-tab" data-tab="logs">📋 Logs</button>
+        </nav>
+        
+        <!-- KONTEN -->
+        <div class="content-area">
+            <!-- TAB DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card red">
+                        <h3>Total Unit</h3>
+                        <p id="totalUnit">0</p>
+                    </div>
+                    <div class="stat-card gold">
+                        <h3>Total Tips</h3>
+                        <p id="totalTips">Rp 0</p>
+                    </div>
+                    <div class="stat-card red">
+                        <h3>Total Bonus</h3>
+                        <p id="totalBonus">Rp 0</p>
+                    </div>
+                    <div class="stat-card gold">
+                        <h3>Total Kasbon</h3>
+                        <p id="totalKasbon">Rp 0</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📋 Payroll Terbaru</h3>
+                    <div id="payrollList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB HRD -->
+            <div id="tab-hrd" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>👥 Manajemen User</h3>
+                        <button onclick="showAddUserModal()" class="btn-primary">➕ Tambah User</button>
+                    </div>
+                    <div id="userList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB PAYROLL -->
+            <div id="tab-payroll" class="tab-content">
+                <div class="card">
+                    <h3>💰 Generate Payroll</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Periode</label>
+                            <input type="date" id="periodePayroll">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipe</label>
+                            <select id="tipePayroll">
+                                <option value="15">15 Hari</option>
+                                <option value="30">30 Hari</option>
+                            </select>
+                        </div>
+                        <button onclick="generatePayroll()" class="btn-primary">⚡ Generate</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>📋 Data Payroll</h3>
+                    <div id="payrollData" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB PENGELUARAN -->
+            <div id="tab-pengeluaran" class="tab-content">
+                <div class="card">
+                    <h3>💸 Input Pengeluaran Cabang</h3>
+                    <form id="pengeluaranForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tanggal</label>
+                                <input type="date" id="tglPengeluaran">
+                            </div>
+                            <div class="form-group">
+                                <label>Cabang</label>
+                                <select id="cabangPengeluaran">
+                                    <option value="GROBOGAN">Grobogan</option>
+                                    <option value="PALIS">Palis</option>
+                                    <option value="CAYUR">Cayur</option>
+                                    <option value="KRESEK">Kresek</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <select id="kategoriPengeluaran">
+                                    <option value="Listrik">Listrik</option>
+                                    <option value="Air">Air</option>
+                                    <option value="Kebersihan">Kebersihan</option>
+                                    <option value="ATK">ATK</option>
+                                    <option value="Maintenance">Maintenance</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah</label>
+                                <input type="number" id="jumlahPengeluaran" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Keterangan</label>
+                            <input type="text" id="keteranganPengeluaran" placeholder="Keterangan...">
+                        </div>
+                        <button type="submit" class="btn-primary">💾 Simpan</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- TAB APPROVE -->
+            <div id="tab-approve" class="tab-content">
+                <div class="card">
+                    <h3>✅ Persetujuan Izin Istirahat</h3>
+                    <div id="izinList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>✅ Persetujuan Laporan Cabang</h3>
+                    <div id="laporanList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TAB LOGS -->
+            <div id="tab-logs" class="tab-content">
+                <div class="card">
+                    <h3>📋 Log Aktivitas</h3>
+                    <div id="logsList" class="table-container">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADD USER -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('addUserModal')">&times;</span>
+            <h3>➕ Tambah User Baru</h3>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="newNama" placeholder="Nama lengkap" required>
+                </div>
+                <div class="form-group">
+                    <label>Jabatan</label>
+                    <select id="newJabatan">
+                        <option value="Karyawan">Karyawan</option>
+                        <option value="Kepala Toko">Kepala Toko</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Owner">Owner</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cabang</label>
+                    <select id="newCabang">
+                        <option value="-">-</option>
+                        <option value="GROBOGAN">Grobogan</option>
+                        <option value="PALIS">Palis</option>
+                        <option value="CAYUR">Cayur</option>
+                        <option value="KRESEK">Kresek</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">💾 Simpan</button>
+            </form>
+            <div id="addUserResult" class="message-box"></div>
+        </div>
+    </div>
+
+    <script src="Script.js"></script>
+    <script>
+        // URL Apps Script (dari hasil deploy)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydsYO1skuQO4MtFhNF1WYhfQ3Q3oHHxo5JtpPiORkC30WckJDtSoHp7X78JIW2LP3w/exec';
+        
+        // ============================================
+        // INISIALISASI
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cek session
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'Login.html';
+                return;
+            }
+            
+            // Tampilkan nama user
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('userName').textContent = '👤 ' + (user.nama || 'User');
+            
+            // Load data
+            loadDashboardData();
+            loadUsers();
+            loadPayroll();
+            loadIzin();
+            loadLaporan();
+            loadLogs();
+            
+            // Set default tanggal
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tglPengeluaran').value = today;
+            document.getElementById('periodePayroll').value = today;
+            
+            // Event listener navigasi
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tabName = this.dataset.tab;
+                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                    document.getElementById('tab-' + tabName).classList.add('active');
+                    
+                    // Reload data sesuai tab
+                    if (tabName === 'dashboard') loadDashboardData();
+                    else if (tabName === 'hrd') loadUsers();
+                    else if (tabName === 'payroll') loadPayroll();
+                    else if (tabName === 'approve') { loadIzin(); loadLaporan(); }
+                    else if (tabName === 'logs') loadLogs();
+                });
+            });
+            
+            // Event form pengeluaran
+            document.getElementById('pengeluaranForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await submitPengeluaran();
+            });
+            
+            // Event form add user
+            document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await submitAddUser();
+            });
+        });
+        
+        // ============================================
+        // FUNGSI DASHBOARD
+        // ============================================
+        async function loadDashboardData() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'getDashboardData', 
+                        token: token 
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('totalUnit').textContent = result.total_unit || 0;
+                    document.getElementById('totalTips').textContent = 'Rp ' + formatNumber(result.total_tips || 0);
+                    document.getElementById('totalBonus').textContent = 'Rp ' + formatNumber(result.total_bonus || 0);
+                    document.getElementById('totalKasbon').textContent = 'Rp ' + formatNumber(result.total_kasbon || 0);
+                    
+                    // Payroll list
+                    const list = document.getElementById('payrollList');
+                    if (result.payroll_terbaru && result.payroll_terbaru.length > 0) {
+                        let html = '<table><tr><th>Nama</th><th>Total</th><th>Status</th></tr>';
+                        result.payroll_terbaru.forEach(p => {
+                            html += `<tr>
+                                <td>${p.nama}</td>
+                                <td>Rp ${formatNumber(p.total)}</td>
+                                <td><span class="badge ${p.status}">${p.status}</span></td>
+                            </tr>`;
+                        });
+                        html += '</table>';
+                        list.innerHTML = html;
+                    } else {
+                        list.innerHTML = '<p>Belum ada data payroll</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+        
+        // ============================================
+        // FUNGSI HRD
+        // ============================================
+        async function loadUsers() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'getAllUsers', 
+                        token: token 
+                    })
+                });
+                const result = await response.json();
+                
+                const list = document.getElementById('userList');
+                if (result.success && result.users && result.users.length > 0) {
+                    let html = `<table>
+                        <tr><th>ID</th><th>Nama</th><th>Jabatan</th><th>Cabang</th><th>Status</th><th>Aksi</th></tr>`;
+                    result.users.forEach(u => {
+                        const statusClass = u.status === 'aktif' ? 'badge-success' : 'badge-danger';
+                        html += `<tr>
+                            <td>${u.id}</td>
+                            <td>${u.nama}</td>
+                            <td>${u.jabatan}</td>
+                            <td>${u.kode_cabang || '-'}</td>
+                            <td><span class="badge ${statusClass}">${u.status}</span></td>
+                            <td>
+                                <button onclick="editUser('${u.id}')" class="btn-sm btn-edit">✏️</button>
+                                <button onclick="resetPasswordUser('${u.id}')" class="btn-sm btn-reset">🔑</button>
+                                <button onclick="deleteUser('${u.id}')" class="btn-sm btn-delete">🗑️</button>
+                            </td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    list.innerHTML = html;
+                } else {
+                    list.innerHTML = '<p>Belum ada user</p>';
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+        
+        function showAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'block';
+            document.getElementById('addUserForm').reset();
+            document.getElementById('addUserResult').textContent = '';
+            document.getElementById('addUserResult').className = 'message-box';
+        }
+        
+        async function submitAddUser() {
+            const resultDiv = document.getElementById('addUserResult');
+            const btn = document.querySelector('#addUserForm button');
+            
+            const data = {
+                action: 'addUser',
+                token: localStorage.getItem('token'),
+                nama: document.getElementById('newNama').value.trim(),
+                jabatan: document.getElementById('newJabatan').value,
+                kode_cabang: document.getElementById('newCabang').value
+            };
+            
+            if (!data.nama) {
+                resultDiv.className = 'message-box error';
+                resultDiv.textContent = 'Nama wajib diisi!';
+                return;
+            }
+            
+            btn.textContent = 'Loading...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.className = 'message-box success';
+                    resultDiv.innerHTML = `User berhasil ditambahkan!<br>ID: <strong>${result.id}</strong> | Password: <strong>${result.password}</strong>`;
+                    loadUsers();
+                    setTimeout(() => {
+                        document.getElementById('addUserModal').style.display = 'none';
+                    }, 3000);
+                } else {
+                    resultDiv.className = 'message-box error';
+                    resultDiv.textContent = result.message || 'Gagal menambah user';
+                }
+            } catch (error) {
+                resultDiv.className = 'message-box error';
+                resultDiv.textContent = 'Gagal terhubung ke server';
+            } finally {
+                btn.textContent = '💾 Simpan';
+                btn.disabled = false;
+            }
+        }
+        
+        async function resetPasswordUser(id) {
+            if (!confirm('Reset password untuk user ID ' + id + '?')) return;
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'resetPassword',
+                        token: localStorage.getItem('token'),
+                        id: id
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Password berhasil direset!\nPassword baru: ' + result.password);
+                    loadUsers();
+                } else {
+                    alert(result.message || 'Gagal reset password');
+                }
+            } catch (error) {
+                alert('Gagal terhubung ke server');
+            }
+        }
+        
+        async function deleteUser(id) {
+            if (!confirm('Nonaktifkan user ID ' + id + '?')) return;
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'deleteUser',
+                        token: localStorage.getItem('token'),
+                        id: id
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    loadUsers();
+                } else {
+                    alert(result.message || 'Gagal menonaktifkan user');
+                }
+            } catch (error) {
+                alert('Gagal terhubung ke server');
+            }
+        }
+        
+        // ============================================
+        // FUNGSI PAYROLL
+        // ============================================
+        async function loadPayroll() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'getPayroll', 
+                        token: token 
+                    })
+                });
+                const result = await response.json();
+                
+                const list = document.getElementById('payrollData');
+                if (result.success && result.payroll && result.payroll.length > 0) {
+                    let html = `<table>
+                        <tr><th>Periode</th><th>Nama</th><th>Unit</th><th>Tips</th><th>Bonus</th><th>Kasbon</th><th>WIFI</th><th>Total</th><th>Status</th></tr>`;
+                    result.payroll.forEach(p => {
+                        html += `<tr>
+                            <td>${p.periode}</td>
+                            <td>${p.nama}</td>
+                            <td>${p.total_unit}</td>
+                            <td>Rp ${formatNumber(p.total_tips)}</td>
+                            <td>Rp ${formatNumber(p.total_bonus)}</td>
+                            <td>Rp ${formatNumber(p.total_kasbon)}</td>
+                            <td>Rp ${formatNumber(p.total_wifi)}</td>
+                            <td><strong>Rp ${formatNumber(p.total_payroll)}</strong></td>
+                            <td><span class="badge ${p.status}">${p.status}</span></td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    list.innerHTML = html;
+                } else {
+                    list.innerHTML = '<p>Belum ada data payroll</p>';
+                }
+            } catch (error) {
+                console.error('Error loading payroll:', error);
+            }
+        }
+        
+        async function generatePayroll() {
+            const periode = document.getElementById('periodePayroll').value;
+            const tipe = document.getElementById('tipePayroll').value;
+            
+            if (!periode) {
+                alert('Pilih periode terlebih dahulu');
+                return;
+            }
+            
+            if (!confirm('Generate payroll untuk periode ' + periode + ' tipe ' + tipe + ' hari?')) return;
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'generatePayroll',
+                        token: localStorage.getItem('token'),
+                        periode: periode,
+                        tipe: tipe
+                    })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message + '\nTotal karyawan: ' + result.total_karyawan);
+                    loadPayroll();
+                } else {
+                    alert(result.message || 'Gagal generate payroll');
+                }
+            } catch (error) {
+                alert('Gagal terhubung ke server');
+            }
+        }
+        
+        // ============================================
+        // FUNGSI PENGELUARAN
+        // ============================================
+        async function submitPengeluaran() {
+            const data = {
+                action: 'inputPengeluaran',
+                token: localStorage.getItem('token'),
+                tanggal: document.getElementById('tglPengeluaran').value,
+                kode_cabang: document.getElementById('cabangPengeluaran').value,
+                kategori: document.getElementById('kategoriPengeluaran').value,
+                jumlah: parseInt(document.getElementById('jumlahPengeluaran').value) || 0,
+                keterangan: document.getElementById('keteranganPengeluaran').value
+            };
+            
+            if (!data.tanggal) {
+                alert('Tanggal wajib diisi');
+                return;
+            }
+            if (data.jumlah <= 0) {
+                alert('Jumlah wajib diisi dan harus lebih dari 0');
+                return;
+            }
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    document.getElementById('pengeluaranForm').reset();
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('tglPengeluaran').value = today;
+                } else {
+                    alert(result.message || 'Gagal simpan pengeluaran');
+                }
+            } catch (error) {
+                alert('Gagal terhubung ke server');
+            }
+        }
+        
+        // ============================================
+        // FUNGSI APPROVE
+        // ============================================
+        async function loadIzin() {
+            // Implementasi load izin
+            document.getElementById('izinList').innerHTML = '<p>Memuat data izin...</p>';
+        }
+        
+        async function loadLaporan() {
+            // Implementasi load laporan
+            document.getElementById('laporanList').innerHTML = '<p>Memuat data laporan...</p>';
+        }
+        
+        // ============================================
+        // FUNGSI LOGS
+        // ============================================
+        async function loadLogs() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'getLogs', 
+                        token: token 
+                    })
+                });
+                const result = await response.json();
+                
+                const list = document.getElementById('logsList');
+                if (result.success && result.logs && result.logs.length > 0) {
+                    let html = `<table>
+                        <tr><th>Waktu</th><th>User</th><th>Aksi</th><th>Detail</th></tr>`;
+                    result.logs.forEach(l => {
+                        html += `<tr>
+                            <td>${l.timestamp}</td>
+                            <td>${l.user_name || l.user_id}</td>
+                            <td>${l.action}</td>
+                            <td>${l.detail}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    list.innerHTML = html;
+                } else {
+                    list.innerHTML = '<p>Belum ada log aktivitas</p>';
+                }
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+        
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function formatNumber(num) {
+            if (!num) return '0';
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'Login.html';
+        }
+    </script>
+</body>
+</html>
