@@ -4,7 +4,6 @@
 
 // URL Web App (PASTIKAN URL INI BENAR)
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydsYO1skuQO4MtFhNF1WYhfQ3Q3oHHxo5JtpPiORkC30WckJDtSoHp7X78JIW2LP3w/exec';
-
 // ============================================
 // FUNGSI IKLAN (DUMMY UNTUK TESTING)
 // ============================================
