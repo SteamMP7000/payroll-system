@@ -10,10 +10,10 @@
     <div class="login-container">
         <div class="login-box">
             <div class="logo-container">
-    <h1>🔐</h1>
-    <h2>PAYROLL SYSTEM</h2>
-    <p>STEAM MP 7000</p>
-</div>
+                <h1>🔐</h1>
+                <h2>PAYROLL SYSTEM</h2>
+                <p>STEAM MP 7000</p>
+            </div>
             
             <form id="loginForm">
                 <div class="form-group">
@@ -31,8 +31,9 @@
         </div>
         
         <div class="footer">
-    <p>© 2026 Steam MP 7000</p>
-</div>
+            <p>© 2026 Steam MP 7000</p>
+        </div>
+    </div>
 
     <script src="Script.js"></script>
     <script>
@@ -46,6 +47,7 @@
             // Reset pesan
             messageDiv.className = 'message-box';
             messageDiv.textContent = '';
+            messageDiv.style.display = 'block';
             
             if (!id || !password) {
                 messageDiv.className = 'message-box error';
@@ -55,60 +57,62 @@
             
             // Tampilkan loading
             const btn = this.querySelector('button');
+            const btnText = btn.textContent;
             btn.textContent = 'Loading...';
             btn.disabled = true;
             
             try {
+                console.log('Mengirim request ke:', SCRIPT_URL);
+                console.log('Data:', { id: id, password: password });
+                
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: 'login', 
-                        id: id, 
-                        password: password 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        id: id,
+                        password: password
                     })
                 });
                 
+                console.log('Response status:', response.status);
+                
                 const result = await response.json();
-                console.log('Login result:', result);
+                console.log('Hasil response:', result);
                 
                 if (result.success) {
                     // Simpan token dan data user
                     localStorage.setItem('token', result.token);
                     localStorage.setItem('user', JSON.stringify(result.user));
                     
-                    // Cek apakah perlu iklan (KT & Karyawan)
-                    if (shouldShowAds(result.user.jabatan)) {
-                        // Tampilkan iklan interstitial
-                        showInterstitialAd(function() {
-                            redirectToDashboard(result.user);
-                        });
-                    } else {
-                        redirectToDashboard(result.user);
-                    }
+                    messageDiv.className = 'message-box success';
+                    messageDiv.textContent = 'Login berhasil! Mengalihkan...';
+                    
+                    setTimeout(() => {
+                        if (result.user.jabatan === 'Owner' || result.user.jabatan === 'Admin') {
+                            window.location.href = 'Dashboard_Owner.html';
+                        } else if (result.user.jabatan === 'Kepala Toko') {
+                            window.location.href = 'Dashboard_KT.html';
+                        } else {
+                            window.location.href = 'Dashboard_Karyawan.html';
+                        }
+                    }, 1000);
+                    
                 } else {
                     messageDiv.className = 'message-box error';
                     messageDiv.textContent = result.message || 'Login gagal';
                 }
             } catch (error) {
-                console.error('Login error:', error);
+                console.error('Error detail:', error);
                 messageDiv.className = 'message-box error';
                 messageDiv.textContent = 'Gagal terhubung ke server. Periksa koneksi internet.';
             } finally {
-                btn.textContent = 'LOGIN';
+                btn.textContent = btnText;
                 btn.disabled = false;
             }
         });
-        
-        function redirectToDashboard(user) {
-            if (user.jabatan === 'Owner' || user.jabatan === 'Admin') {
-                window.location.href = 'Dashboard_Owner.html';
-            } else if (user.jabatan === 'Kepala Toko') {
-                window.location.href = 'Dashboard_KT.html';
-            } else {
-                window.location.href = 'Dashboard_Karyawan.html';
-            }
-        }
     </script>
 </body>
 </html>
