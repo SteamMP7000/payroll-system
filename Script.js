@@ -3,7 +3,7 @@
 // ============================================
 
 // URL Web App (PASTIKAN URL INI BENAR)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7N-IFHnBMS88EIXNh8R-1tNwG4usWCjiTpDJIpu_ccRF1CAth1hiewVjLOJIUHRXi/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEydKM4AiV4JsaoVEb7rqdyMuu2YuCB_D3W3FYxI6ixFPDQGo00wUJ8rIGSFZaAe4U/exec';
 // ============================================
 // FUNGSI IKLAN (DUMMY UNTUK TESTING)
 // ============================================
